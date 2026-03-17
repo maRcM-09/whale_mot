@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whale-mot"
+version = "0.1.0"
+description = "Modular detector-tracker benchmarking pipeline for whale footage"
+requires-python = ">=3.10"
+dependencies = [
+    "ultralytics",
+    "boxmot",
+    "norfair",
+    "motmetrics",
+    "opencv-python",
+    "pyyaml",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "tqdm",
+    "scipy",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

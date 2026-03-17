@@ -1,0 +1,12 @@
+pyproject.toml
+src/whale_mot/__init__.py
+src/whale_mot.egg-info/PKG-INFO
+src/whale_mot.egg-info/SOURCES.txt
+src/whale_mot.egg-info/dependency_links.txt
+src/whale_mot.egg-info/requires.txt
+src/whale_mot.egg-info/top_level.txt
+src/whale_mot/common/__init__.py
+src/whale_mot/detectors/__init__.py
+src/whale_mot/evaluation/__init__.py
+src/whale_mot/pipelines/__init__.py
+src/whale_mot/trackers/__init__.py

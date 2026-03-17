@@ -1,0 +1,20 @@
+1- Maybe separate detections and tracks [useful since you can 
+then run your detections and test separate models]
+2- try to run your pre-trained video on the model
+3- Check the code for 
+experiments.py , 
+visualize , 
+load the yaml
+4- Make a readme so that you can either present or run a 
+quick demo in front of him
+
+
+Tuesday:
+
+1- Check why there is this weird "if" statement in the pipeline
+2- Check what the NorFair tracker does, but it seems 
+it simply reassigns IDs based on a distance function and 
+does not really predict? not sure honestly.
+
+
+

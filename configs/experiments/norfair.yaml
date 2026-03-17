@@ -1,0 +1,7 @@
+video_path: data/raw/BlueWhales.mp4
+detection_csv: outputs/detections/sample_detections.csv
+output_track_csv: outputs/tracks/sample_tracks.csv
+
+tracker:
+  name: norfair
+  distance_threshold: 35.0

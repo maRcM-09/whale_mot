@@ -1,0 +1,14 @@
+ultralytics
+boxmot
+norfair
+motmetrics
+opencv-python 
+pyyaml 
+numpy 
+pandas 
+matplotlib 
+tqdm 
+scipy
+pytest 
+black 
+ruff
