@@ -31,18 +31,22 @@ def main():
     tracks_by_frame = load_tracks(args.tracks)
 
     cap = cv2.VideoCapture(args.video)
+    # Create resizable window first
+    cv2.namedWindow("YOLO11 Tracking", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("YOLO11 Tracking", 800, 600)
+    
     if not cap.isOpened():
         raise RuntimeError(f"Could not open video: {args.video}")
-
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)//2)
-    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)//2)
+    # saving for now at this size
+    fps = 30
+    w = int(cap.get(3))
+    h = int(cap.get(4))
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     writer = cv2.VideoWriter(
-        str(output_path),
+        f"{output_path}.mp4",
         cv2.VideoWriter_fourcc(*"mp4v"),
         fps,
         (w, h),
@@ -65,7 +69,7 @@ def main():
                 (0, 255, 0),
                 2,
             )
-        cv2.imshow("Frame", frame)
+        cv2.imshow("YOLO11 Tracking", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 

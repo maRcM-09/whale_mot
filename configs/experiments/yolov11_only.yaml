@@ -1,8 +1,0 @@
-video_path: data/raw/BlueWhales.mp4
-output_detection_csv: outputs/detections/sample_detections.csv
-
-detector:
-  name: ultralytics
-  model_name: yolo11n.pt
-  device: cpu
-  conf: 0.25

@@ -1,4 +1,40 @@
-./outputs/videos
-./data/
-./checkpoints/
+# =========================
+# Jupyter / VSCode
+# =========================
+.ipynb_checkpoints/
+.vscode/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Data (VERY IMPORTANT)
+# =========================
+configs/experiments/*.yaml
+configs/trackers/*.yaml
+configs/detectors/*.yaml
+data/raw/
+data/gt_mot/
+checkpoints/
+# =========================
+# Outputs (your pipeline)
+# =========================
+outputs/
+*.mp4
+*.avi
+*.csv
+
+# =========================
+# Model weights
+# =========================
 *.pt
+*.pth
+*.onnx
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db

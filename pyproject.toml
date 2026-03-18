@@ -19,6 +19,7 @@ dependencies = [
     "matplotlib",
     "tqdm",
     "scipy",
+    "boxmot"
 ]
 
 [tool.setuptools.packages.find]
