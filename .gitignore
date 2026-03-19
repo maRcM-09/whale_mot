@@ -12,9 +12,6 @@
 # =========================
 # Data (VERY IMPORTANT)
 # =========================
-configs/experiments/*.yaml
-configs/trackers/*.yaml
-configs/detectors/*.yaml
 data/raw/
 data/gt_mot/
 checkpoints/

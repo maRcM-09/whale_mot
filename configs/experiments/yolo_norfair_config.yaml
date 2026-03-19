@@ -1,0 +1,13 @@
+video_path: data/raw/BlueWhales.mp4
+output_detection_csv: outputs/detections/sample_detections_finetuned.csv
+output_track_csv: outputs/tracks/sample_tracks_finetuned.csv
+
+detector:
+  name: ultralytics
+  model_name: /home/marcm/Documents/EPFL/MA4/whale_project/create_Dataset/yolo_whales_detection/content/runs/detect/yolo_training/yolo_whales/weights/best.pt
+  device: cpu
+  conf: 0.7
+
+tracker:
+  name: norfair
+  distance_threshold: 35.0

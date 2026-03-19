@@ -1,0 +1,11 @@
+video_path: data/raw/BlueWhales.mp4
+detection_csv: outputs/detections/sample_detections_finetuned.csv
+output_track_csv: outputs/tracks/sample_tracks_bytetrack_finetuned.csv
+# bytetrack parameters: 
+tracker:
+  name: bytetrack
+  min_confidence: 0.7
+  track_threshold: 0.7
+  match_threshold: 0.9
+  track_buffer: 30
+  frame_rate: 30

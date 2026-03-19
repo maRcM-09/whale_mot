@@ -19,7 +19,9 @@ dependencies = [
     "matplotlib",
     "tqdm",
     "scipy",
-    "boxmot"
+    "boxmot",
+    "torchmetrics",
+    "trackeval"
 ]
 
 [tool.setuptools.packages.find]
