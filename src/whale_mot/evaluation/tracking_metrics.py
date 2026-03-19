@@ -36,6 +36,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 from pathlib import Path
 from dataclasses import dataclass
+import numpy as np
+if not hasattr(np, "asfarray"):
+    np.asfarray = lambda a, dtype=float: np.asarray(a, dtype=dtype)
 import motmetrics as mm
 
 @dataclass
@@ -58,7 +61,7 @@ def _validate_columns(
 
 def _load_csv(path: str | Path , name: str) -> pd.DataFrame:
     df = pd.read_csv(path)
-    _validate_columns(df, ['image_id', 'x1', 'y1', 'x2', 'y2', 'score'], name)
+    _validate_columns(df, ['frame','id','x1','y1','x2','y2','confidence','class_id'], name)
     return df
 
 def compute_tracking_metrics(
@@ -73,12 +76,12 @@ def compute_tracking_metrics(
     acc = mm.MOTAccumulator(auto_id=True)
 
     # Process each frame and update the accumulator
-    for frame_id in sorted(gt_df['image_id'].unique()):
-        gt_frame = gt_df[gt_df['image_id'] == frame_id]
-        pred_frame = pred_df[pred_df['image_id'] == frame_id]
+    for frame_id in sorted(gt_df['frame'].unique()):
+        gt_frame = gt_df[gt_df['frame'] == frame_id]
+        pred_frame = pred_df[pred_df['frame'] == frame_id]
 
-        gt_ids = gt_frame['track_id'].tolist()
-        pred_ids = pred_frame['track_id'].tolist()
+        gt_ids = gt_frame['id'].tolist()
+        pred_ids = pred_frame['id'].tolist()
 
         gt_boxes = gt_frame[['x1', 'y1', 'x2', 'y2']].values
         pred_boxes = pred_frame[['x1', 'y1', 'x2', 'y2']].values
@@ -94,7 +97,7 @@ def compute_tracking_metrics(
     # Compute metrics using the accumulator
     mh = mm.metrics.create()
     summary = mh.compute(acc, 
-                         metrics=['mota', 'motp', 'idf1', 'idp', 'idr', 'idsw'], 
+                         metrics=['mota', 'motp', 'idf1', 'idp', 'idr', 'num_switches'], 
                          name='overall')
 
     return TrackingMetricResult(
@@ -103,5 +106,12 @@ def compute_tracking_metrics(
         idf1=summary.loc['overall', 'idf1'],
         idp=summary.loc['overall', 'idp'],
         idr=summary.loc['overall', 'idr'],
-        idsw=int(summary.loc['overall', 'idsw'])
+        idsw=int(summary.loc['overall', 'num_switches'])
     )
+
+if __name__ == "__main__":
+    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_botsort_finetuned.csv"
+    pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_botsort_finetuned.csv"
+
+    metrics = compute_tracking_metrics(gt_csv, pred_csv)
+    print(metrics)

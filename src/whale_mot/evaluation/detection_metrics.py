@@ -2,89 +2,112 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
-import numpy as np
 import pandas as pd
 import torch
-from torchmetrics.detection.mean_ap import MeanAveragePrecision 
+from torchmetrics.detection.mean_ap import MeanAveragePrecision
+
 
 @dataclass
 class DetectionMetricResult:
     map: float
     map_50: float
     map_75: float
-    map_1: float
-    map_10: float
-    map_100: float
-    recall_at_iou: float
-    precision_at_iou: float
-    f1_at_iou: float
-    tp: int
-    fp: int
-    fn: int
+    mar_1: float
+    mar_10: float
+    mar_100: float
 
-def _validate_columns(
-        df: pd.DataFrame,
-        required: list[str],
-        name: str) -> None:
-    
+
+def _validate_columns(df: pd.DataFrame, required: list[str], name: str) -> None:
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError(f"Missing required columns in {name}: {missing}")
 
-def _load_csv(path: str | Path , name: str) -> pd.DataFrame:
+
+def _load_gt_csv(path: str | Path, name: str) -> pd.DataFrame:
     df = pd.read_csv(path)
-    _validate_columns(df, ['image_id', 'x1', 'y1', 'x2', 'y2', 'score'], name)
+    _validate_columns(df, ["frame", "x1", "y1", "x2", "y2", "class_id"], name)
     return df
 
+
+def _load_pred_csv(path: str | Path, name: str) -> pd.DataFrame:
+    df = pd.read_csv(path)
+    _validate_columns(df, ["frame", "x1", "y1", "x2", "y2", "confidence", "class_id"], name)
+    return df
+
+
+def _frame_to_target(frame_df: pd.DataFrame) -> dict:
+    if len(frame_df) == 0:
+        return {
+            "boxes": torch.zeros((0, 4), dtype=torch.float32),
+            "labels": torch.zeros((0,), dtype=torch.int64),
+        }
+
+    boxes = torch.tensor(frame_df[["x1", "y1", "x2", "y2"]].to_numpy(), dtype=torch.float32)
+    labels = torch.tensor(frame_df["class_id"].to_numpy(), dtype=torch.int64)
+
+    return {
+        "boxes": boxes,
+        "labels": labels,
+    }
+
+
+def _frame_to_preds(frame_df: pd.DataFrame) -> dict:
+    if len(frame_df) == 0:
+        return {
+            "boxes": torch.zeros((0, 4), dtype=torch.float32),
+            "scores": torch.zeros((0,), dtype=torch.float32),
+            "labels": torch.zeros((0,), dtype=torch.int64),
+        }
+
+    boxes = torch.tensor(frame_df[["x1", "y1", "x2", "y2"]].to_numpy(), dtype=torch.float32)
+    scores = torch.tensor(frame_df["confidence"].to_numpy(), dtype=torch.float32)
+    labels = torch.tensor(frame_df["class_id"].to_numpy(), dtype=torch.int64)
+
+    return {
+        "boxes": boxes,
+        "scores": scores,
+        "labels": labels,
+    }
+
+
 def compute_detection_metrics(
-        gt_csv: str | Path,
-        pred_csv: str | Path,
-        iou_threshold: float = 0.5) -> DetectionMetricResult:
-    
-    gt_df = _load_csv(gt_csv, "ground truth")
-    pred_df = _load_csv(pred_csv, "predictions")
+    gt_csv: str | Path,
+    pred_csv: str | Path,
+) -> DetectionMetricResult:
+    gt_df = _load_gt_csv(gt_csv, "ground truth")
+    pred_df = _load_pred_csv(pred_csv, "predictions")
 
-    metric = MeanAveragePrecision(iou_threshold=iou_threshold)
+    metric = MeanAveragePrecision()
 
-    gt_boxes = []
-    gt_labels = []
-    for _, row in gt_df.iterrows():
-        gt_boxes.append([row['x1'], row['y1'], row['x2'], row['y2']])
-        gt_labels.append(row['class_id'])  
+    all_frames = sorted(set(gt_df["frame"].unique()).union(set(pred_df["frame"].unique())))
 
-    pred_boxes = []
-    pred_labels = []
-    pred_scores = []
-    
-    for _, row in pred_df.iterrows():
-        pred_boxes.append([row['x1'], row['y1'], row['x2'], row['y2']])
-        pred_labels.append(row['class_id'])  
-        pred_scores.append(row['score'])
+    preds = []
+    targets = []
 
-    gt_boxes_tensor = torch.tensor(gt_boxes, dtype=torch.float32)
-    gt_labels_tensor = torch.tensor(gt_labels, dtype=torch.int64)
-    pred_boxes_tensor = torch.tensor(pred_boxes, dtype=torch.float32)
-    pred_labels_tensor = torch.tensor(pred_labels, dtype=torch.int64)
-    pred_scores_tensor = torch.tensor(pred_scores, dtype=torch.float32)
+    for frame in all_frames:
+        gt_frame = gt_df[gt_df["frame"] == frame]
+        pred_frame = pred_df[pred_df["frame"] == frame]
 
-    metric.update(pred_boxes_tensor, pred_labels_tensor, pred_scores_tensor, gt_boxes_tensor, gt_labels_tensor)
-    
+        targets.append(_frame_to_target(gt_frame))
+        preds.append(_frame_to_preds(pred_frame))
+
+    metric.update(preds, targets)
     results = metric.compute()
-    
+
     return DetectionMetricResult(
-        map=results['map'],
-        map_50=results['map_50'],
-        map_75=results['map_75'],
-        map_1=results['map_1'],
-        map_10=results['map_10'],
-        map_100=results['map_100'],
-        recall_at_iou=results['recall_at_iou'],
-        precision_at_iou=results['precision_at_iou'],
-        f1_at_iou=results['f1_at_iou'],
-        tp=results['tp'],
-        fp=results['fp'],
-        fn=results['fn']
+        map=float(results["map"]),
+        map_50=float(results["map_50"]),
+        map_75=float(results["map_75"]),
+        mar_1=float(results["mar_1"]),
+        mar_10=float(results["mar_10"]),
+        mar_100=float(results["mar_100"]),
     )
 
+
+if __name__ == "__main__":
+    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/detections/sample_detections_finetuned.csv"
+    pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/detections/sample_detections_finetuned.csv"
+
+    metrics = compute_detection_metrics(gt_csv, pred_csv)
+    print(metrics)
