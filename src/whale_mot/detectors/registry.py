@@ -8,7 +8,7 @@ def build_detector(cfg: dict):
         return UltralyticsDetector(
             model_name=cfg["model_name"],
             device=cfg.get("device", "cpu"),
-            conf=cfg.get("conf", 0.25),
+            conf=cfg.get("conf", 0.85),
         )
 
     raise ValueError(f"Unknown detector: {name}")

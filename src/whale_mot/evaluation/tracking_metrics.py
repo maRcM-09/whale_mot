@@ -110,8 +110,8 @@ def compute_tracking_metrics(
     )
 
 if __name__ == "__main__":
-    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_botsort_finetuned.csv"
-    pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_botsort_finetuned.csv"
+    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/data/gt_mot/track_gt.csv"
+    pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_finetuned.csv"
 
     metrics = compute_tracking_metrics(gt_csv, pred_csv)
     print(metrics)

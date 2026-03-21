@@ -13,7 +13,7 @@ tracker:
   match_thresh: 0.8
   proximity_thresh: 0.7
   appearance_thresh: 0.6
-  cmc_method: ecc
+  cmc_method: orb
   frame_rate: 30
   fuse_first_associate: False
   with_reid: True

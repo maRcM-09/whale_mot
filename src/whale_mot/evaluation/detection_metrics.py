@@ -106,7 +106,7 @@ def compute_detection_metrics(
 
 
 if __name__ == "__main__":
-    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/detections/sample_detections_finetuned.csv"
+    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/data/gt_mot/detection_gt.csv"
     pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/detections/sample_detections_finetuned.csv"
 
     metrics = compute_detection_metrics(gt_csv, pred_csv)

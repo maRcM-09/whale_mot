@@ -370,8 +370,8 @@ def plot_track_id_over_time(
 
 
 if __name__ == "__main__":
-    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_initial.csv"
-    pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_botsort_finetuned.csv"
+    gt_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/data/gt_mot/track_gt.csv"
+    pred_csv = "/home/marcm/Documents/EPFL/MA4/whale_project/whale_mot/outputs/tracks/sample_tracks_finetuned.csv"
 
 
     segments = compute_continuity_segments(
@@ -395,7 +395,7 @@ if __name__ == "__main__":
         segments=segments,
         save_path="outputs/eval/continuity_segments.png",
         show=True,
-        min_label_length=25,
+        min_label_length=1,
     )
 
     plot_track_id_over_time(

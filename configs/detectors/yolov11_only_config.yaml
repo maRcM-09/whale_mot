@@ -1,8 +1,8 @@
-video_path: data/raw/BlueWhales.mp4
+video_path: data/raw/BlueWhales_1.mp4
 output_detection_csv: outputs/detections/sample_detections.csv
 
 detector:
   name: ultralytics
-  model_name: yolo11n.pt
+  model_name: /home/marcm/Documents/EPFL/MA4/whale_project/create_Dataset/yolo_whales_detection/content/runs/detect/yolo_training/yolo_whales/weights/best.pt
   device: cpu
-  conf: 0.25
+  conf: 0.82

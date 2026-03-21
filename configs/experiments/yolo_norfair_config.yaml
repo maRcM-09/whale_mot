@@ -1,4 +1,4 @@
-video_path: data/raw/BlueWhales.mp4
+video_path: data/raw/BlueWhales_1.mp4
 output_detection_csv: outputs/detections/sample_detections_finetuned.csv
 output_track_csv: outputs/tracks/sample_tracks_finetuned.csv
 
@@ -9,5 +9,18 @@ detector:
   conf: 0.7
 
 tracker:
-  name: norfair
-  distance_threshold: 35.0
+  tracker:
+  name: botsort
+  reid_weights: osnet_x0_25_msmt17.pt
+  device: cpu
+  track_high_thresh: 0.7
+  track_low_thresh: 0.65
+  new_track_thresh: 0.2
+  track_buffer: 30
+  match_thresh: 0.8
+  proximity_thresh: 0.7
+  appearance_thresh: 0.6
+  cmc_method: orb
+  frame_rate: 30
+  fuse_first_associate: False
+  with_reid: True
